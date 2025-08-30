@@ -1,4 +1,4 @@
-# Awesome-papers-blogs-on-LLM-and-Agent-Security
+# Awesome papers and blogs on Agent Security
 
 In the following Google doc., we categorize and summarize recent papers and interesting blogs (about real-world attacks) on the security risks of LLM-enabled AI agents. 
 It includes benchmarks, red-teaming (attack), and blue-teaming (defense) approaches 
