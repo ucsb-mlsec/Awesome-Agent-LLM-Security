@@ -47,7 +47,7 @@ Disclaimer: Please note that while we strive to include a comprehensive selectio
   - [Agent security survey and benchmarks](#agent-security-survey-and-benchmarks)
   - [Agent system card](#agent-system-card)
 - [Red-teaming](#red-teaming)
-  - [General attacks: Prompt injection/Memory/Backdoor](#general-attacks-prompt-injectionmemorybbackdoor)
+  - [General attacks: Prompt injection/Memory/Backdoor](#general-attacks-prompt-injectionmemorybackdoor)
   - [Attack against specific agents](#attack-against-specific-agents)
 - [Blue-teaming](#blue-teaming)
   - [Model-based defenses](#model-based-defenses)
