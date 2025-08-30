@@ -1,18 +1,5 @@
 # Awesome papers and blogs on Agent Security
 
-In the following Google doc., we categorize and summarize recent papers and interesting blogs (about real-world attacks) on the security risks of LLM-enabled AI agents. 
-It includes benchmarks, red-teaming (attack), and blue-teaming (defense) approaches 
-We use this doc. as a literature review and a paper and blog tracker. 
-We also provide discussions on potential research directions.
-
-<a href="https://docs.google.com/document/d/1i5B1tp1srUbPj7nC4mWXRz7OkPbLW3c09r8Qyo6MShU/edit?usp=sharing">AI Agent Safety and Security</a>
-
-It is a commentable link. We welcome new contributors (Feel free to leave your name, we will ack your contribution). 
-
-We also have an old paper list on <a href="https://docs.google.com/document/d/1QowkXo-cM0UQF2FzdSjNkZis9ODeU6AIwucC0nH_vcc/edit?usp=sharing">LLM security and safety</a>, although it is no longer actively maintained. 
-
-# Awesome papers and blogs on Agent Security
-
 
 ## Overview
 
@@ -51,6 +38,22 @@ Based on the attack entry points and attack path/targets, we can have
 There could be four combinations, where [direct injection + model as the target] downgrade to [LLM safety and security](https://docs.google.com/document/d/1QowkXo-cM0UQF2FzdSjNkZis9ODeU6AIwucC0nH_vcc/edit?usp=sharing). 
 
 Disclaimer: Please note that while we strive to include a comprehensive selection of papers on the security and safety threats of AI agents, it is not possible to cover all interesting and relevant papers. We will do our best to continually update and expand this document to incorporate more significant contributions in this fast-evolving field. In this document, we discuss the limitations of the included papers. These critiques are not intended to reflect negatively on the authors or the quality of their work. All the papers reviewed here are recognized as valuable contributions to the field. Our aim is to provide constructive analysis to foster further research and understanding.
+
+
+## Table of Contents
+
+- [Agentic system & benchmarks](#agentic-system--benchmarks)
+  - [Agent survey and benchmarks](#agent-survey-and-benchmarks)
+  - [Agent security survey and benchmarks](#agent-security-survey-and-benchmarks)
+  - [Agent system card](#agent-system-card)
+- [Red-teaming](#red-teaming)
+  - [General attacks: Prompt injection/Memory/Backdoor](#general-attacks-prompt-injectionmemorybbackdoor)
+  - [Attack against specific agents](#attack-against-specific-agents)
+- [Blue-teaming](#blue-teaming)
+  - [Model-based defenses](#model-based-defenses)
+  - [System-level Runtime Defense](#system-level-runtime-defense)
+  - [Others](#others)
+- [Contributors](#contributors)
 
 
 ## Agentic system & benchmarks
@@ -256,3 +259,350 @@ Note that injection is an attack method, not an attack goal; one can launch an i
     4. [A Trembling House of Cards? Mapping Adversarial Attacks against Language Agents](https://arxiv.org/pdf/2402.10196)
     5. [Misusing Tools in Large Language Models With Visual Adversarial Examples](https://scholar.google.com/citations?view_op=view_citation&hl=en&user=1eNRT-UAAAAJ&citation_for_view=1eNRT-UAAAAJ:zYLM7Y9cAGgC)
         1. Visual input-based prompt injection (applicable to both direct and indirect prompt injections)
+
+
+### Attack against specific agents
+
+
+
+1. ChatGPT Operator:
+    1. [https://embracethered.com/blog/posts/2025/chatgpt-operator-prompt-injection-exploits/](https://embracethered.com/blog/posts/2025/chatgpt-operator-prompt-injection-exploits/)
+    2. https://embracethered.com/blog/posts/2025/chatgpt-how-does-chat-history-memory-preferences-work
+2. **Web agents**: Most attacks manipulate the web with malicious contents/queries, when LLM agents interact with the web, the malicious contents will be fed to the agents. Some attacks can be applied to multi-modal (MM) agents but the malicious contents are only in text
+    1. Dissecting Adversarial Attacks on Multimodal LM Agents
+        1. Classify attacks into:
+            1. Illusioning: maintain the original user task while subtly manipulating information retrieved from tools, e.g., for a shopping agent, the user asks the agent to buy the cheapest jacket, then a malicious seller can inject a prompt that indicates its price is the lowest to mislead the lim.
+            2. Goal misdirection: ask the agent to ignore the user task and follow the injected prompt
+        2. Attack method: manipulation of uploaded item images/texts
+    2. EIA: Environmental Injection Attack on Generalist Web Agents for Privacy Leakage
+        1. Threat models
+            1. Leak users' PII or users' task (let LLM fill PII into an invisible box)
+            2. The web developer is malicious or malicious users contaminate development tools
+        2. Inject persuade prompt into the HTML content of webpages
+        3. If the attacker controls the web, it can get PII directly; no need to do it through injection
+    3. AdvWeb: Controllable Black-box Attacks on VLM-powered Web Agents
+        1. Similar threat model as EIA but automatically generates attack prompts 
+    4. Wipi: A new web threat for LLM-driven web agents
+        1. Similar paper with EIA. but targets on llm with rag instead of web agent
+        2. Aim to disrupt llm by using misdirect (e.g. Don’t summarize the webpage content)
+    5. [From Prompt Injections to SQL Injection Attacks: How Protected is Your LLM-Integrated Web Application?](https://arxiv.org/abs/2308.01990)
+    6. CVE-Bench: A Benchmark for AI Agents’ Ability to Exploit Real-World Web Application Vulnerabilities
+3. **Coding agent**
+    1. A New Era in LLM Security: Exploring Security Concerns in Real-World LLM-based Systems (2024) [[PDF](https://arxiv.org/pdf/2402.18649)]
+        1. Threat models: Prompt injection  
+        2. LLM system (agent): objects; actions (information processing execution for individual objects); interactions; constraints
+        3. Analysis of constraints of actions (more like single-actor conversations)
+            1. Case study: LLM Outputs External Image Links with Markdown Format
+            2. Existence of constraints: yes & robustness of constraints: not that robust (bypass via jailbreaking and indirect prompt injection)
+        4. Analysis of constraints of interactions
+            1. Cases: Sandbox (unauthorized access)/Web tools (indirect plugin calling)/Frontend (render malicious URLs)
+        5. End2end attacks (exploit chain): the attack goal is to steal users’ private conversation records  
+    2. RedCode: Risky Code Execution and Generation Benchmark for Code Agents
+        1. Benchmark coding model/agent risks: generating malware and executing malicious stuff
+    3. RedCodeAgent: Automatic Red-teaming Agent against Code Agents
+        1. Threat model: Mislead the LLM agent into using a specified tool (third attack type)
+        2. An upgrade of RedCode-Exec with the refinement capabilities 
+        3. Use RedCode-Exec dataset for risk scenario and requirement
+    4. Abuse code interpreters to gain access to underlying host operating systems or use them as a platform to wage cyber attacks 
+        1. CYBERSECEVAL 2: A Wide-Ranging Cybersecurity Evaluation Suite for Large Language Models [[PDF](https://arxiv.org/pdf/2404.13161)]
+            1. Test whether a target code generation models/LLM refuse to execute malicious requests 
+                1. Construct 500 interpreter abuse prompts 
+                2. Use another LLM to judge whether the target model is compliant with the malicious request or refuses the malicious request
+        2. Defense: Use high-quality data to train (identified by previous generation of models); safety evaluation and tuning; lower benign refusals (finetune with high-quality data)
+    5. Some CVEs (arbitrary code execution and SQL injection)
+        1. [https://cve.mitre.org/cgi-bin/cvekey.cgi?keyword=Prompt+injection](https://cve.mitre.org/cgi-bin/cvekey.cgi?keyword=Prompt+injection) 
+        2. [https://jfrog.com/blog/prompt-injection-attack-code-execution-in-vanna-ai-cve-2024-5565/](https://jfrog.com/blog/prompt-injection-attack-code-execution-in-vanna-ai-cve-2024-5565/)
+        3. [https://github.com/langchain-ai/langchain/issues/21592](https://github.com/langchain-ai/langchain/issues/21592)
+        4. [https://www.blazeinfosec.com/post/llm-pentest-agent-hacking/](https://www.blazeinfosec.com/post/llm-pentest-agent-hacking/)
+        5. [https://www.ntietz.com/blog/langchain-rce/](https://www.ntietz.com/blog/langchain-rce/)
+    6. Demystifying RCE Vulnerabilities in LLM-Integrated Apps
+    7. ARTEMIS: Analyzing LLM Application Vulnerabilities in Practice
+4. **Personal assistant agents**
+    1. [Attacking Vision-Language Computer Agents via Pop-ups](https://arxiv.org/abs/2411.02391)
+        1. Indirect prompt injection, attack through pop-ups
+        2. Concern: pop-up is (maybe) easy to defend and easy to remove on the web
+    2. [Data Exposure from LLM Apps: An In-depth Investigation of OpenAI's GPTs](https://arxiv.org/abs/2408.13247) 
+    3. [LLM Platform Security: Applying a Systematic Evaluation Framework to OpenAI's ChatGPT Plugins](https://arxiv.org/abs/2309.10254)
+        1. Categorize and evaluate the risks of using untrusted third-party plugins 
+    4. [Personal LLM Agents: Insights and Survey about the Capability, Efficiency, and Security](https://arxiv.org/abs/2401.05459)
+
+
+## Blue-teaming
+
+### Model-based defenses 
+
+
+
+1. Guardrail
+    1. Flexible, but can be potentially bypassed with guardrail injection and incurs computational costs
+    2. ShieldAgent: Shielding Agents via Verifiable Safety Policy Reasoning
+        1. Guardrail policy generation based on documents and LLM
+    3. A Holistic Approach to Undesired Content Detection in the Real World (OpenAI guardrail)
+    4. Llama Guard: classification model on LLM inputs and outputs, have 6 safety-related categories
+    5. Llama Prompt Guard 2
+        1. [https://huggingface.co/meta-llama/Llama-Prompt-Guard-2-86M](https://huggingface.co/meta-llama/Llama-Prompt-Guard-2-86M)
+        2. Llama Prompt Guard 2 models classify prompts as ‘malicious’ if the prompt explicitly attempts to override prior instructions embedded into or seen by an LLM. This classification considers only the intent to supersede developer or user instructions, regardless of whether the prompt is potentially harmful or the attack is likely to succeed.
+    6. Nvidia NeMo: programmable guardirail
+        1. Define a DSL with a set of rules, calibrate input queries with rules based on embedding distance (with KNN)
+        2. Input rail (user input), Dialog rail (next step), Retrieval rail (external data), Execution rail (tool call), Output rail (final output)
+    7. Guardrails AI: User-specified rail specs; guard (regular expression or classifier); if trigger error, correct the user prompts; output checking
+    8. Building Guardrails for Large Language Models (ICML)
+        1. Suggestions: formal guarantee to avoid arms races; resolving conflicts via priority and ensemble; rule-based & learning-based solutions
+    9. A Causal Explainable Guardrails for Large Language Models (LLMGuardrail) [CCS’24]
+    10. WebGuard: Building a Generalizable Guardrail for Web Agents
+2. Inference-phase defenses: 
+    1. Finetune a classifier to identify prompt injection (similar as guardrail)
+        1. Fine-Tuned DeBERTa-v3-base for Prompt Injection Detection: 
+            1. [huggingface.co/ProtectAI/deberta-v3-base-prompt-injection-v2](http://huggingface.co/ProtectAI/deberta-v3-base-prompt-injection-v2)
+        2. GenTel-Safe: A Unified Benchmark and Shielding Framework for Defending Against Prompt Injection Attacks [arxiv 2409]
+            1. Finetune a classifier (which is independent from the LLM) to detect the model
+        3. Embedding-based classifiers can detect prompt injection attacks
+            1. Use a pretrained embedding model to embed benign prompts and prompt injection attacked prompts, then use traditional machine learning method for classification (regression, xgboost, etc)
+        4. DataSentinel: A Game-Theoretic Detection of Prompt Injection Attacks (SP’ 25)
+            1. Identify prompt injection in untrusted inputs by leveraging a fine-tuned model vulnerable to prompt injection, with known-answer detection
+    2. Prompt-level defense: 
+        1. Defense Against Prompt Injection Attack by Leveraging Attack Techniques
+            1. Use prompt injection attacks to append the original benign prompt at the end of input prompts
+        2. Formalizing and Benchmarking Prompt Injection Attacks and Defenses [USENIX Security’ 24]
+            1. known-answer detection (append an additional instruction into user prompt, e.g., “say a secret word xxx”), then detect if outputs contain this secret word
+        3. PromptShield: Deployable Detection for Prompt Injection Attacks
+        4. Robustness via Referencing: Defending against Prompt Injection Attacks by Referencing the Executed Instruction
+        5. FATH: Authentication-based Test-time Defense against Indirect Prompt Injection Attack
+            1. Runtime-generated authentication code
+        6. Microsoft Spotlighting - Defending Against Indirect Prompt Injection Attacks With Spotlighting
+            1. Add delimeters
+    3. Defense based on internal representations 
+        1. Get my drift? Catching LLM Task Drift with Activation Delta (SaTML)
+        2. Attention Tracker: Detecting Prompt Injection Attacks in LLMs
+            1. intuition: if a malicious prompt is injected, the attention score over the original prompt will largely decrease
+            2. Find the “important attention head” that behaves differently under benign prompts and prompt injection attack prompts, summing the attention score over the original prompt tokens, if less than a certain threshold, deny to respond
+3. Training-based defenses:
+    1. StruQ: Defending Against Prompt Injection with Structured Queries
+        1. Build structured prompts that have special tokens to separate user prompts and user data
+        2. Finetune the model to ignore contents after the specific tokens
+    2. SecAlign: Aligning LLMs to Be Robust Against Prompt Injection 
+        1. Preference learning-based finetuning: The LLM is only trained to favor the desirable response, but does not know what an undesirable response looks like. Thus, a secure LLM should also observe the response to the injected instruction and be steered away from that response.
+    3. Rule-Based Rewards for Language Model Safety
+        1. Better alignment strategy
+    4. Jatmo: Prompt injection defense by task-specific finetuning
+    5. The Instruction Hierarchy: Training LLMs to Prioritize Privileged Instructions
+        1. Construct data for both “aligned” instructions and “misaligned” instructions
+        2. fine-tuning protocol that induces an LLM to privilege higher privilege instructions over lower-privilege instructions (system > developer > user).
+    6. Instructional Segment Embedding: Improving LLM Safety with Instruction Hierarchy 
+        1. Adding a segment embedding layer for better learning instruction hierarchy
+
+
+
+### System-level Runtime Defense
+
+
+
+1. **Input validation and sanitization: Guardrails on LLM input**
+    1. Benefits: Guardrails’ non-invasiveness allows minor modification and utility impact in the agent
+    2. Limitations: Challenging to provide resilience against adaptive attacks 
+    3. Model-based guardrails
+        1. LlamaFirewall - PromptGuard: detect direct/indirect prompt injection
+        2. Microsoft Prompt Shields: detect safety and security of LLM output (e.g., hate, violence, self-harm, direct/indirect prompt injection)
+    4. Rule-based guardrails
+        1. Nvidia NeMo: DSL for input guardrail
+        2. [Google safe browsing](https://safebrowsing.google.com/)
+        3. Content Security Policy (CSP) allow-list
+        4. Google - Building a secure agentic ai application leveraging a2a protocol
+2. **Policy enforcement: Guardrails on LLM output**
+    1. Benefits: Guardrails’ non-invasiveness allows minor modification and utility impact in the agent
+    2. Limitations: Challenging to provide resilience against adaptive attacks 
+    3. Model-based guardrails
+        1. LlamaFirewall - AlignmentCheck: LLM output alignment check.
+        2. Microsoft Prompt Shields: detect safety and security of LLM output (e.g., hate, violence, self-harm, direct/indirect prompt injection)
+    4. Rule-based guardrails
+        1. Nvidia NeMo: DSL for LLM output guardrail
+        2. [Google](https://security.googleblog.com/2025/06/mitigating-prompt-injection-attacks.html) - UI renderer specific : Only render google internal images
+        3. LlamaFirewall - CodeShield: regex based rules to detect malicious LLM-generated code
+        4. AI Agents with Formal Security Guarantees
+            1. Provide policy language for agents that can be manually defined by agent developers.
+            2. Information flow policy
+    5. Hybrid guardrails: Generate rules with model or agent
+        1. GuardAgent: Safeguard LLM Agents via Knowledge-Enabled Reasoning
+            1. Agent for Guardrail generation. Generate guardrails using LLM and code execution/debugging tools.
+            2. Similar to Progent.
+        2. AGrail: A Lifelong Agent Guardrail with Effective and Adaptive Safety Detection
+            1. Use model to generate safety checks
+            2. Use model and tools to perform safety checks before action
+        3. Progent: Programmable Privilege Control for LLM Agents
+            1. Design a runtime fine-grained policy generation framework and automate the policy generation with LLM
+            2. Runtime agent sandboxing: Constrain agent tool calls based on the previous context.
+        4. Contextual Agent Security: A Policy for Every Purpose
+            1. Same as Progent. Runtime policy generation based on trusted context data (i.e., Contextual policy) and fine-grained agent sandbox enforcement.
+    10. AgentSpec: Customizable Runtime Enforcement for Safe and Reliable LLM Agents
+3. **Identity and privilege management**
+    1. Agent identity
+        1. Motivation: Visibility to regulators, users (whether they’re interacting with agents or human), runtime monitoring, post-hoc analysis
+        2. Visibility into AI agents: measures to improve agent visibility
+            1. Agent identifiers: Agent card, Underlying system, Involved actors -- clarify who is accountable in case an agent causes harm.
+            2. Real-time monitoring
+            3. Activity logs
+        3. IDs for AI systems
+        4. Infrastructure for AI Agents
+            1. Attribution: Identity binding, Certification, Agent IDs
+            2. Interaction: Agent network channels, Oversight layers (e.g., user intervention), inter-agent communication, commitment devices
+            3. Response: Incident reporting, rollbacks
+        5. Prompt Infection: LLM tagging - `[Agent name]: ` in front of agent responses.
+    2. Centralized identity
+        1. okta - general identity management
+        2. composio - agent identity management
+        3. OpenID-Connect protocol (OIDC)
+    3. Decentralized identity
+        1. Agent Network Protocol - Identity and Encrypted Communication Layer
+            1. W3C DID (Decentralized Identifiers)
+        2. Microsoft Verified ID [https://learn.microsoft.com/en-us/entra/verified-id/decentralized-identifier-overview](https://learn.microsoft.com/en-us/entra/verified-id/decentralized-identifier-overview)
+    4. Agent privilege management
+        1. Authenticated Delegation and Authorized AI Agents
+            1. human user creating a digital authorization that a specific AI agent can use to access a digital service (or interact with another AI agent) on behalf of the user, which can be verified by the corresponding service or agent for its authenticity.
+            2. A delegation token authorizes an AI agent to act on the user’s behalf
+            3. Task scoping and resource scoping
+        2. Composio
+            1. User-friendly agent framework that provides OAuth token-based IAM
+        3. robots.txt
+    5. RAG/VectorDB Access control
+        1. [https://aws.amazon.com/blogs/machine-learning/access-control-for-vector-stores-using-metadata-filtering-with-knowledge-bases-for-amazon-bedrock/](https://aws.amazon.com/blogs/machine-learning/access-control-for-vector-stores-using-metadata-filtering-with-knowledge-bases-for-amazon-bedrock/)
+        2. HoneyBee: Efficient Role-based Access Control for Vector Databases via Dynamic Partitioning
+            1. Find a balance between space-time tradeoff for vectorDB access control using dynamic partitioning
+        3. ControlNet: A Firewall for RAG-based LLM System
+            1. RAG access control with LLM activation-based detection and mitigation
+4. **Privilege separation and access control**
+    1. LLM Agents Should Employ Security Principles
+        1. Defense-in-depth strategy: Least privilege by dividing agents into persistent/ephemeral agents. Complete mediation by data minimizer and response filter.
+        2. Automated policy configuration by a reward modeling policy engine: Adaptive policy learning based on task success rate.
+    2. Planner-Executor separation
+        1. Defeating Prompt Injections by Design (CaMeL)
+            1. Separate privileges of an agent: planner agent generates a program (i.e., determines control flow and data flow), and a quarantine agent parses untrusted data. Prevents untrusted data from corrupting the control and data flow.
+            2. Data flow policies
+        2. FIDES: Securing AI Agents with Information-Flow Control
+        3. System-Level Defense against Indirect Prompt Injection Attacks: An Information Flow Control Perspective (f-secure)
+            1. Control the information flows and access control in an agent system to prevent malicious information from being propagated and executed by the agent system
+            2. Disaggregates the components of an LLM system into a context-aware pipeline with dynamically generated structured executable plans, and a security monitor filters out untrusted input into the planning process 
+            3. Provide formal models with an analysis of the security guarantee 
+            4. Privilege separation: planner and unprivileged parser.
+        4. Design Patterns for Securing LLM Agents against Prompt Injections
+    3. Agent privilege separation
+        1. Prompt Flow Integrity to Prevent Privilege Escalation in LLM Agents
+            1. Separate privileges of an agent: a privileged agent and an unprivileged agent have different tool permissions, managed by their access tokens.
+            2. Prevent confused deputy: i) Replace untrusted data from the lower-privilege agent into a data ID, so that they cannot corrupt control/data flow of the privileged agent. ii) Track untrusted data to prevent it from being used in unsafe data flow.
+    4. Security module - Executor separation
+        1. AirGapAgent: Protecting Privacy-Conscious Conversational Agents
+            1. Design a runtime data minimization to prevent prompt injection attacks that leak confidential data
+            2. Separate privileges of an agent: a data minimization agent that selects privacy data based on trusted data, and the baseline agent that handles untrusted data with the minimized privacy data.
+    5. Mobile system privilege separation
+        1. [SecGPT: An Execution Isolation Architecture for LLM-Based Systems](https://arxiv.org/abs/2403.04960) (IsolateGPT)
+            1. Design interfaces and permission control to Isolate the execution of GPT-integrated third-party apps
+            2. Target attacks: app compromise, data stealing, inadvertent data exposure, and uncontrolled system alteration
+5. **Monitoring and auditing**
+    1. GUARDIAN: Safeguarding LLM Multi-Agent Collaborations with Temporal Graph Modeling
+        1. Detect error propagation in multi-agent system with graph modeling
+    2. SentinelAgent: Graph-based Anomaly Detection in LLM-based Multi-Agent Systems
+        1. Represents the multi-agent system (MAS) as an interaction graph with nodes (agents/tools) and edges (communications).
+        2. Global anomaly detection: task-level output divergence, prompt-level attacks
+        3. Single-point failure localization: specific faulty agents/tools, tool misuse
+        4. Multi-point failure attribution: distributed or emergent issues, 
+    3. Testing Language Model Agents Safely in the Wild
+        1. Monitoring harmful or offtask agent output in web and file access 
+        2. web search, browse website, write to file, read file, list files, execute python file, and execute python code.
+    4. Disclosure Audits for LLM Agents
+        1. Auditing for accumulatively steering conversation to induce privacy leakage.
+        2. Detects explicit leakage with LLM judge and implicit leakage
+    5. AgentAuditor: Human-Level Safety and Security Evaluation for LLM Agents
+        1. Extracts structured features (scenario, risk, behavior) from agent interactions and constructs RAG. Reference relevant examples to assess new agent interactions.
+    6. Monitoring LLM Agents for Sequentially Contextual Harm
+        1. Task decomposition: Seemingly benign subtasks for high-level malicious task
+        2. adaptive attacks with task decomposition can bypass existing guardrails or LLM-based monitors.
+    7. Visibility into AI Agents
+        1. Real-time monitoring without logs and activity logs for post-hoc analysis, forensic investigation
+6. **Information flow control, taint tracking**
+    1. Challenges
+        1. How to track data flow in an LLM agent?
+        2. What data flow policies to enforce?
+    2. Multi-execution-based data flow tracking
+        1. Permissive Information-Flow Analysis for Large Language Models
+            1. Permissive IFC in LLM: [Secure multi-execution](https://ieeexplore.ieee.org/document/5504711) for information flow analysis in LLM
+        2. MELON: Provable Defense Against Indirect Prompt Injection Attacks in AI Agents (ICMl 2025)
+            1. Detect indirect prompt injection by measuring the original user prompt and the task-neutral prompt. Detects attacker-injected tool calls.
+    3. Symbolization-based data flow tracking
+        1. Prompt Flow Integrity to Prevent Privilege Escalation in LLM Agent
+            1. Taint tracking to prevent privilege escalation and confused deputy attack
+        2. Defeating Prompt Injections by Design (CaMeL)
+            1. Taint tracking to ensure external system policy compliance
+        3. FIDES: Securing AI Agents with Information-Flow Control
+            1. IFC to enforce confidentiality and integrity at the same time
+        4. RTBAS: Defending LLM Agents Against Prompt Injection and Privacy Leakage
+            1. IFC combined with a model-based dependency screener to overcome label creep
+    4. LLM-based control/data dependency analysis
+        1. AgentArmor: Enforcing Program Analysis on Agent Runtime Trace to Defend Against Prompt Injection
+    5. Policies
+        1. Privilege escalation: PFI
+        2. Confidentiality and Integrity: FIDES
+        3. Policy compliance: Camel
+7. **Formal verification**
+    1. Formal modelling agent (Not for security purpose)
+        1. Planning anything with rigor: General-purpose zero-shot planning with llm-based formalized programming
+            1.  formally formulate and solve them as optimization problems to improve planning performance of LLM
+        2. PDL: A Declarative Prompt Programming Language
+            1. make prompt programming simpler, less brittle, and more enjoyable
+        3. Formally Specifying the High-Level Behavior of LLM-Based Agents
+            1. declarative agent framework, such that the user specifies the desired high-level behavior in terms of constraints without concern for how they should be implemented or enforced
+            1. Improves controllability and performance
+        4. Formal-LLM: Integrating Formal Language and Natural Language for Controllable LLM-based Agents
+            1. Framework that allows agent developers to express their requirements or constraints for the planning process as an automaton
+            2. Improves controllability and performance
+    2. Mobile GUI agent verification
+        1. Safeguarding Mobile GUI Agent via Logic-based Action Verification
+            1. Define DSL to represent the desired behavior (user intent) and the actual behavior (app execution) in a unified, logically verifiable manner.
+8. **Credential and secret management**
+    1. Big Help or Big Brother? Auditing Tracking, Profiling, and Personalization in Generative AI Assistants
+    2. Incidents
+        1. Italy blocks ChatGPT due to privacy concerns [https://www.bbc.co.uk/news/technology-65139406](https://www.bbc.co.uk/news/technology-65139406)
+        2. ChatGPT chat history leakage (March 2023) [https://openai.com/index/march-20-chatgpt-outage/](https://openai.com/index/march-20-chatgpt-outage/)
+            1. Due to a vulnerability in Redis server - Request use-after-free
+        3. Meta AI fails to show privacy notice to users [https://www.mozillafoundation.org/en/campaigns/meta-help-users-stop-accidentally-sharing-private-ai-conversations/](https://www.mozillafoundation.org/en/campaigns/meta-help-users-stop-accidentally-sharing-private-ai-conversations/)
+    1. Services
+        1. ChatGPT temporary chat: Temporary Chats won’t appear in your history, and ChatGPT won’t remember anything you talk about. For safety purposes we may still keep a copy for up to 30 days.
+
+
+### Others
+
+**Pre-deployment defenses**
+
+1. [Model hardening](#bookmark=id.ytbs06fc4zdt)
+2. [Prompting](#bookmark=id.f6gbdhjtaien)
+3. Agent vulnerability finding
+
+**Tool protection**
+
+1. MCP Safety Audit: LLMs with the Model Context Protocol Allow Major Security Exploits
+
+**Post-detection defenses**
+
+1. User alert
+2. Recovery
+    2. [GoEX: Perspectives and Designs Towards a Runtime for Autonomous LLM Applications](https://arxiv.org/abs/2404.06921) 
+        1. Design post-facto validation with an undo feature and damage confinement  
+        2. Access control (secret data is stored locally, ask for user’s permission), symbolic credentials, and sandboxing 
+3. Logging and analysis
+
+**Other references**
+
+1. [OWASP LLM Prompt Injection Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html)
+2. [An Introduction to Google’s Approach to AI Agent Security](https://research.google/pubs/an-introduction-to-googles-approach-for-secure-ai-agents/)
+    1. A hybrid defense-in-depth approach: combines traditional, deterministic security with dynamic, reasoning-based defenses
+    2. Runtime policy enforcement (traditional, deterministic) limits the worst-case impact of agent malfunction.
+    3. Reasoning-based solutions, including adversarial training, guard models, and security analysis.
+3. [Mitigating prompt injection attacks with a layered defense strategy](https://security.googleblog.com/2025/06/mitigating-prompt-injection-attacks.html) by Google GenAI Security Team
+    4. Defense-in-depth approach
+        1. Prompt injection content classifiers
+        2. Security thought reinforcement
+        3. Markdown sanitization and suspicious URL redaction
+        4. User confirmation framework
+        5. End-user security mitigation notifications
+
+# Contributors
+
+We thank the following awesome contributions: Zhun Wang, Kaijie Zhu, Yuzhou Nie, Tianneng Shi, Juhee Kim, Zeyi Liao, Ruizhe Jiang and Wenbo Guo (😄). Thank you!
